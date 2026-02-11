@@ -1,0 +1,125 @@
+﻿@model PruebaTrabajadores.Models.Trabajador
+
+<form id="createForm" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Nombres" class="form-label"></label>
+            <input asp-for="Nombres" class="form-control" />
+            <span asp-validation-for="Nombres" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Apellidos" class="form-label"></label>
+            <input asp-for="Apellidos" class="form-control" />
+            <span asp-validation-for="Apellidos" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="DNI" class="form-label"></label>
+            <input asp-for="DNI" class="form-control" maxlength="8" />
+            <span asp-validation-for="DNI" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Telefono" class="form-label"></label>
+            <input asp-for="Telefono" class="form-control" />
+            <span asp-validation-for="Telefono" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Sexo" class="form-label"></label>
+            <select asp-for="Sexo" class="form-select">
+                <option value="">Seleccione</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+            </select>
+            <span asp-validation-for="Sexo" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="CorreoElectronico" class="form-label"></label>
+            <input asp-for="CorreoElectronico" class="form-control" type="email" />
+            <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label asp-for="FechaNacimiento" class="form-label"></label>
+            <input asp-for="FechaNacimiento" class="form-control" type="date" />
+            <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label asp-for="FechaIngreso" class="form-label"></label>
+            <input asp-for="FechaIngreso" class="form-control" type="date" />
+            <span asp-validation-for="FechaIngreso" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="Cargo" class="form-label"></label>
+            <input asp-for="Cargo" class="form-control" />
+            <span asp-validation-for="Cargo" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Departamento" class="form-label"></label>
+            <select asp-for="Departamento" class="form-select">
+                <option value="">Seleccione</option>
+                <option value="Tecnología">Tecnología</option>
+                <option value="Finanzas">Finanzas</option>
+                <option value="Ventas">Ventas</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Operaciones">Operaciones</option>
+                <option value="Recursos Humanos">Recursos Humanos</option>
+                <option value="Administración">Administración</option>
+            </select>
+            <span asp-validation-for="Departamento" class="text-danger"></span>
+        </div>
+        <div class="col-md-2 mb-3">
+            <label asp-for="Salario" class="form-label"></label>
+            <div class="input-group">
+                <span class="input-group-text">S/</span>
+                <input asp-for="Salario" class="form-control" type="number" step="0.01" />
+            </div>
+            <span asp-validation-for="Salario" class="text-danger"></span>
+        </div>
+        <div class="col-md-2 mb-3">
+            <label asp-for="Estado" class="form-label"></label>
+            <select asp-for="Estado" class="form-select">
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+            </select>
+            <span asp-validation-for="Estado" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar Trabajador</button>
+    </div>
+</form>
+
+<script>
+    // Envío del formulario vía AJAX
+    $('#createForm').submit(function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: '@Url.Action("Create", "Trabajadores")',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $('#trabajadorModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('Error al procesar la solicitud');
+            }
+        });
+    });
+</script>

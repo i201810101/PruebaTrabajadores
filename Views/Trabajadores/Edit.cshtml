@@ -1,0 +1,242 @@
+﻿@model PruebaTrabajadores.Models.Trabajador
+
+@{
+    ViewData["Title"] = "Editar Trabajador";
+}
+
+<form id="editForm" asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" id="Id" />
+
+    <div class="row">
+        <!-- NOMBRES Y APELLIDOS -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="Nombres" class="form-label">Nombres *</label>
+            <input asp-for="Nombres" class="form-control" placeholder="Ingrese los nombres" />
+            <span asp-validation-for="Nombres" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Apellidos" class="form-label">Apellidos *</label>
+            <input asp-for="Apellidos" class="form-control" placeholder="Ingrese los apellidos" />
+            <span asp-validation-for="Apellidos" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- DNI Y TELÉFONO -->
+        <div class="col-md-4 mb-3">
+            <label asp-for="DNI" class="form-label">DNI *</label>
+            <input asp-for="DNI" class="form-control" maxlength="8" placeholder="8 dígitos" />
+            <span asp-validation-for="DNI" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Telefono" class="form-label">Teléfono *</label>
+            <input asp-for="Telefono" class="form-control" placeholder="Ingrese el teléfono" />
+            <span asp-validation-for="Telefono" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Sexo" class="form-label">Sexo *</label>
+            <select asp-for="Sexo" class="form-select">
+                <option value="">Seleccione</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+            </select>
+            <span asp-validation-for="Sexo" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- CORREO Y FECHAS -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="CorreoElectronico" class="form-label">Correo Electrónico *</label>
+            <input asp-for="CorreoElectronico" class="form-control" type="email" placeholder="ejemplo@correo.com" />
+            <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label asp-for="FechaNacimiento" class="form-label">Fecha de Nacimiento *</label>
+            <input asp-for="FechaNacimiento" class="form-control" type="date" />
+            <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label asp-for="FechaIngreso" class="form-label">Fecha de Ingreso *</label>
+            <input asp-for="FechaIngreso" class="form-control" type="date" />
+            <span asp-validation-for="FechaIngreso" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- CARGO Y DEPARTAMENTO -->
+        <div class="col-md-4 mb-3">
+            <label asp-for="Cargo" class="form-label">Cargo *</label>
+            <select asp-for="Cargo" class="form-select">
+                <option value="">Seleccione el cargo</option>
+                <option value="Gerente">Gerente</option>
+                <option value="Desarrollador">Desarrollador</option>
+                <option value="Analista">Analista</option>
+                <option value="Diseñador">Diseñador</option>
+                <option value="Coordinador">Coordinador</option>
+                <option value="Especialista">Especialista</option>
+                <option value="Técnico">Técnico</option>
+                <option value="Asistente">Asistente</option>
+                <option value="Administrador">Administrador</option>
+                <option value="Supervisor">Supervisor</option>
+            </select>
+            <span asp-validation-for="Cargo" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Departamento" class="form-label">Departamento *</label>
+            <select asp-for="Departamento" class="form-select">
+                <option value="">Seleccione el departamento</option>
+                <option value="Tecnología">Tecnología</option>
+                <option value="Finanzas">Finanzas</option>
+                <option value="Ventas">Ventas</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Operaciones">Operaciones</option>
+                <option value="Recursos Humanos">Recursos Humanos</option>
+                <option value="Administración">Administración</option>
+                <option value="Logística">Logística</option>
+                <option value="Legal">Legal</option>
+            </select>
+            <span asp-validation-for="Departamento" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Salario" class="form-label">Salario (S/) *</label>
+            <div class="input-group">
+                <span class="input-group-text">S/</span>
+                <input asp-for="Salario" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" />
+            </div>
+            <span asp-validation-for="Salario" class="text-danger"></span>
+        </div>
+        <div class="col-md-2 mb-3">
+            <label asp-for="Estado" class="form-label">Estado *</label>
+            <select asp-for="Estado" class="form-select">
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+            </select>
+            <span asp-validation-for="Estado" class="text-danger"></span>
+        </div>
+    </div>
+
+    <!-- INFORMACIÓN ADICIONAL NO EDITABLE -->
+    <div class="alert alert-info mt-3 mb-3">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-info-circle me-2 fs-4"></i>
+            <div>
+                <strong>ID Interno:</strong> @Model.Id<br />
+                <small>Registro creado en el sistema</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer px-0 pb-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-1"></i> Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i> Actualizar Trabajador
+        </button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        // Validación de DNI: solo números y máximo 8 dígitos
+        $('#DNI').on('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length > 8) {
+                this.value = this.value.slice(0, 8);
+            }
+        });
+
+        // Validación de teléfono: solo números
+        $('#Telefono').on('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        // Formatear salario a 2 decimales
+        $('#Salario').on('blur', function() {
+            var valor = parseFloat($(this).val());
+            if (!isNaN(valor)) {
+                $(this).val(valor.toFixed(2));
+            }
+        });
+
+        // Confirmación antes de enviar el formulario
+        $('#editForm').submit(function(e) {
+            e.preventDefault();
+
+            if ($(this).valid()) {
+                Swal.fire({
+                    title: '¿Guardar cambios?',
+                    text: "Los datos del trabajador serán actualizados",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0d6efd',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, actualizar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '@Url.Action("Edit", "Trabajadores")/' + $('#Id').val(),
+                            type: 'POST',
+                            data: $(this).serialize(),
+                            success: function(response) {
+                                if (response.success) {
+                                    $('#trabajadorModal').modal('hide');
+                                    mostrarNotificacion('✅ Trabajador actualizado exitosamente', 'success');
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 1500);
+                                } else {
+                                    if (response.errors) {
+                                        mostrarErroresValidacion(response.errors);
+                                    } else {
+                                        mostrarNotificacion('❌ ' + response.message, 'error');
+                                    }
+                                }
+                            },
+                            error: function() {
+                                mostrarNotificacion('❌ Error al actualizar el trabajador', 'error');
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    // Función para mostrar notificaciones (si no existe en site.js)
+    function mostrarNotificacion(mensaje, tipo) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: tipo === 'success' ? 'success' : 'error',
+                title: tipo === 'success' ? 'Éxito' : 'Error',
+                text: mensaje,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } else {
+            alert(mensaje);
+        }
+    }
+
+    // Función para mostrar errores de validación
+    function mostrarErroresValidacion(errors) {
+        var mensaje = errors.join('\n');
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Errores de validación',
+                text: mensaje
+            });
+        } else {
+            alert('Errores:\n' + mensaje);
+        }
+    }
+</script>
+
+<!-- SweetAlert2 opcional (para mejor UX) -->
+@* Descomenta la siguiente línea si quieres usar SweetAlert2 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+*@

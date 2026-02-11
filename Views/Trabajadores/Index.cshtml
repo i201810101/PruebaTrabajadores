@@ -1,0 +1,196 @@
+﻿@model IEnumerable<PruebaTrabajadores.Models.Trabajador>
+@{
+    ViewData["Title"] = "Gestión de Trabajadores";
+    var resumen = ViewBag.Resumen as PruebaTrabajadores.Models.ResumenViewModel;
+    var filtroSexo = ViewBag.FiltroSexo as string;
+}
+
+<div class="container-fluid py-4">
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Gestión de Trabajadores</h1>
+        <span class="text-muted">Módulo de Mantenimiento</span>
+    </div>
+
+    <!-- TARJETAS DE RESUMEN -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Trabajadores</h5>
+                    <p class="display-4">@resumen?.TotalTrabajadores</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Masculinos</h5>
+                    <p class="display-4">@resumen?.TotalMasculinos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Femeninos</h5>
+                    <p class="display-4">@resumen?.TotalFemeninos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Activos</h5>
+                    <p class="display-4">@resumen?.TotalActivos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTROS Y BOTÓN NUEVO -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Listado de Trabajadores</h6>
+            <button type="button" class="btn btn-primary" id="btnNuevoTrabajador">
+                <i class="fas fa-plus"></i> Nuevo Trabajador
+            </button>
+        </div>
+        <div class="card-body">
+            <!-- FILTRO POR SEXO (BONUS) -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Filtrar por sexo:</label>
+                    <div class="btn-group" role="group">
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary @(string.IsNullOrEmpty(filtroSexo) ? "active" : "")">Todos</a>
+                        <a href="@Url.Action("Index", new { filtroSexo = "Masculino" })" class="btn btn-outline-primary @(filtroSexo == "Masculino" ? "active" : "")">Masculino</a>
+                        <a href="@Url.Action("Index", new { filtroSexo = "Femenino" })" class="btn btn-outline-warning @(filtroSexo == "Femenino" ? "active" : "")">Femenino</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLA CON COLOR POR SEXO (BONUS) -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Trabajador</th>
+                            <th>Contacto</th>
+                            <th>Cargo / Depto</th>
+                            <th>Sexo</th>
+                            <th>Ingreso</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            // BONUS: Color de fila por sexo
+                            string filaColor = item.Sexo == "Masculino" ? "table-primary" : "table-warning";
+
+                            <tr class="@filaColor">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-2"
+                                             style="width: 40px; height: 40px;">
+                                            @item.Iniciales
+                                        </div>
+                                        <div>
+                                            <strong>@item.NombreCompleto</strong><br />
+                                            <small class="text-muted">DNI: @item.DNI</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @item.CorreoElectronico<br />
+                                    <small>@item.Telefono</small>
+                                </td>
+                                <td>
+                                    <strong>@item.Cargo</strong><br />
+                                    <small>@item.Departamento</small>
+                                </td>
+                                <td>@item.Sexo</td>
+                                <td>@item.FechaIngreso.ToString("d/MM/yyyy")</td>
+                                <td>
+                                    @if (item.Estado == "Activo")
+                                    {
+                                        <span class="badge bg-success">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Inactivo</span>
+                                    }
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-info btn-edit" data-id="@item.Id" title="Ver/Editar">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger btn-delete" data-id="@item.Id" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col">
+                    Mostrando @Model.Count() de @resumen?.TotalTrabajadores trabajadores
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODALES -->
+<div class="modal fade" id="trabajadorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Contenido cargado vía AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // NUEVO TRABAJADOR
+            $('#btnNuevoTrabajador').click(function() {
+                $.get('@Url.Action("Create", "Trabajadores")', function(data) {
+                    $('#modalTitle').text('Registrar Nuevo Trabajador');
+                    $('#modalBody').html(data);
+                    $('#trabajadorModal').modal('show');
+                });
+            });
+
+            // EDITAR TRABAJADOR
+            $('.btn-edit').click(function() {
+                var id = $(this).data('id');
+                $.get('@Url.Action("Edit", "Trabajadores")/' + id, function(data) {
+                    $('#modalTitle').text('Editar Trabajador');
+                    $('#modalBody').html(data);
+                    $('#trabajadorModal').modal('show');
+                });
+            });
+
+            // ELIMINAR TRABAJADOR
+            $('.btn-delete').click(function() {
+                var id = $(this).data('id');
+                $.get('@Url.Action("Delete", "Trabajadores")/' + id, function(data) {
+                    $('#modalTitle').text('Confirmar Eliminación');
+                    $('#modalBody').html(data);
+                    $('#trabajadorModal').modal('show');
+                });
+            });
+        });
+    </script>
+}
