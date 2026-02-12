@@ -144,3 +144,4 @@ E:\PruebaTrabajadores\obj\Debug\net8.0\refint\PruebaTrabajadores.dll
 E:\PruebaTrabajadores\obj\Debug\net8.0\PruebaTrabajadores.pdb
 E:\PruebaTrabajadores\obj\Debug\net8.0\PruebaTrabajadores.genruntimeconfig.cache
 E:\PruebaTrabajadores\obj\Debug\net8.0\ref\PruebaTrabajadores.dll
+E:\PruebaTrabajadores\obj\Debug\net8.0\PruebaTrabajadores.sourcelink.json

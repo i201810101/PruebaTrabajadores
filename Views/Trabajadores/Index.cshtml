@@ -8,8 +8,10 @@
 <div class="container-fluid py-4">
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">Gestión de Trabajadores</h1>
-        <span class="text-muted">Módulo de Mantenimiento</span>
+        <div>
+            <h1 class="h2 mb-1">Gestión de Trabajadores</h1>
+            <span class="text-muted">Módulo de Mantenimiento</span>
+        </div>
     </div>
 
     <!-- TARJETAS DE RESUMEN -->
@@ -48,7 +50,7 @@
         </div>
     </div>
 
-    <!-- FILTROS Y BOTÓN NUEVO -->
+    <!-- CARD PRINCIPAL CON TABLA -->
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Listado de Trabajadores</h6>
@@ -57,21 +59,48 @@
             </button>
         </div>
         <div class="card-body">
-            <!-- FILTRO POR SEXO (BONUS) -->
+            <!-- BUSCADOR Y FILTROS -->
             <div class="row mb-3">
-                <div class="col-md-4">
-                    <label class="form-label">Filtrar por sexo:</label>
-                    <div class="btn-group" role="group">
-                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary @(string.IsNullOrEmpty(filtroSexo) ? "active" : "")">Todos</a>
-                        <a href="@Url.Action("Index", new { filtroSexo = "Masculino" })" class="btn btn-outline-primary @(filtroSexo == "Masculino" ? "active" : "")">Masculino</a>
-                        <a href="@Url.Action("Index", new { filtroSexo = "Femenino" })" class="btn btn-outline-warning @(filtroSexo == "Femenino" ? "active" : "")">Femenino</a>
+                <!-- BUSCADOR -->
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text"
+                               class="form-control"
+                               id="searchInput"
+                               placeholder="Buscar por nombre, DNI, email o cargo...">
+                    </div>
+                </div>
+
+                <!-- FILTRO POR SEXO -->
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <label class="form-label me-3 mb-0">
+                            <i class="fas fa-filter me-2"></i>Filtrar por sexo:
+                        </label>
+                        <div class="btn-group" role="group">
+                            <a href="@Url.Action("Index")"
+                               class="btn btn-outline-secondary @(string.IsNullOrEmpty(filtroSexo) ? "active" : "")">
+                                Todos
+                            </a>
+                            <a href="@Url.Action("Index", new { filtroSexo = "Masculino" })"
+                               class="btn btn-outline-primary @(filtroSexo == "Masculino" ? "active" : "")">
+                                Masculino
+                            </a>
+                            <a href="@Url.Action("Index", new { filtroSexo = "Femenino" })"
+                               class="btn btn-outline-warning @(filtroSexo == "Femenino" ? "active" : "")">
+                                Femenino
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- TABLA CON COLOR POR SEXO (BONUS) -->
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover" id="tablaTrabajadores">
                     <thead>
                         <tr>
                             <th>Trabajador</th>
@@ -89,7 +118,11 @@
                             // BONUS: Color de fila por sexo
                             string filaColor = item.Sexo == "Masculino" ? "table-primary" : "table-warning";
 
-                            <tr class="@filaColor">
+                            <tr class="@filaColor trabajador-row"
+                                data-nombre="@item.NombreCompleto.ToLower()"
+                                data-dni="@item.DNI.ToString()"
+                                data-email="@item.CorreoElectronico.ToLower()"
+                                data-cargo="@item.Cargo.ToLower()">
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-2"
@@ -111,7 +144,7 @@
                                     <small>@item.Departamento</small>
                                 </td>
                                 <td>@item.Sexo</td>
-                                <td>@item.FechaIngreso.ToString("d/MM/yyyy")</td>
+                                <td>@item.FechaIngreso.ToString("dd/MM/yyyy")</td>
                                 <td>
                                     @if (item.Estado == "Activo")
                                     {
@@ -138,7 +171,9 @@
 
             <div class="row mt-3">
                 <div class="col">
-                    Mostrando @Model.Count() de @resumen?.TotalTrabajadores trabajadores
+                    <span id="resultadosBusqueda">
+                        Mostrando @Model.Count() de @resumen?.TotalTrabajadores trabajadores
+                    </span>
                 </div>
             </div>
         </div>
@@ -163,6 +198,53 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+            // ========== BUSCADOR EN TIEMPO REAL ==========
+            $('#searchInput').on('keyup', function() {
+                var searchTerm = $(this).val().toLowerCase();
+                var visibleCount = 0;
+
+                $('.trabajador-row').each(function() {
+                    var nombre = $(this).data('nombre');
+                    var dni = $(this).data('dni');
+                    var email = $(this).data('email');
+                    var cargo = $(this).data('cargo');
+
+                    if (nombre.includes(searchTerm) ||
+                        dni.includes(searchTerm) ||
+                        email.includes(searchTerm) ||
+                        cargo.includes(searchTerm)) {
+                        $(this).show();
+                        visibleCount++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                var totalTrabajadores = $('.trabajador-row').length;
+                if (searchTerm === '') {
+                    $('#resultadosBusqueda').html('Mostrando ' + totalTrabajadores + ' de @resumen?.TotalTrabajadores trabajadores');
+                } else {
+                    $('#resultadosBusqueda').html(
+                        'Mostrando ' + visibleCount + ' de ' + totalTrabajadores + ' trabajadores ' +
+                        '<small class="text-muted">(filtrado por búsqueda)</small>'
+                    );
+                }
+
+                if (visibleCount === 0 && searchTerm !== '') {
+                    if ($('#noResultsMessage').length === 0) {
+                        $('#tablaTrabajadores tbody').append(
+                            '<tr id="noResultsMessage">' +
+                            '<td colspan="7" class="text-center py-4">' +
+                            '<i class="fas fa-search text-muted" style="font-size: 3rem;"></i><br>' +
+                            '<span class="text-muted">No se encontraron resultados para "' + searchTerm + '"</span>' +
+                            '</td></tr>'
+                        );
+                    }
+                } else {
+                    $('#noResultsMessage').remove();
+                }
+            });
+
             // NUEVO TRABAJADOR
             $('#btnNuevoTrabajador').click(function() {
                 $.get('@Url.Action("Create", "Trabajadores")', function(data) {
@@ -173,20 +255,10 @@
             });
 
             // EDITAR TRABAJADOR
-            $('.btn-edit').click(function() {
+            $(document).on('click', '.btn-edit', function() {
                 var id = $(this).data('id');
                 $.get('@Url.Action("Edit", "Trabajadores")/' + id, function(data) {
                     $('#modalTitle').text('Editar Trabajador');
-                    $('#modalBody').html(data);
-                    $('#trabajadorModal').modal('show');
-                });
-            });
-
-            // ELIMINAR TRABAJADOR
-            $('.btn-delete').click(function() {
-                var id = $(this).data('id');
-                $.get('@Url.Action("Delete", "Trabajadores")/' + id, function(data) {
-                    $('#modalTitle').text('Confirmar Eliminación');
                     $('#modalBody').html(data);
                     $('#trabajadorModal').modal('show');
                 });

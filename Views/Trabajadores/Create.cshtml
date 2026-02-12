@@ -6,12 +6,12 @@
     <div class="row">
         <div class="col-md-6 mb-3">
             <label asp-for="Nombres" class="form-label"></label>
-            <input asp-for="Nombres" class="form-control" />
+            <input asp-for="Nombres" class="form-control" id="Nombres" />
             <span asp-validation-for="Nombres" class="text-danger"></span>
         </div>
         <div class="col-md-6 mb-3">
             <label asp-for="Apellidos" class="form-label"></label>
-            <input asp-for="Apellidos" class="form-control" />
+            <input asp-for="Apellidos" class="form-control" id="Apellidos" />
             <span asp-validation-for="Apellidos" class="text-danger"></span>
         </div>
     </div>
@@ -19,17 +19,17 @@
     <div class="row">
         <div class="col-md-4 mb-3">
             <label asp-for="DNI" class="form-label"></label>
-            <input asp-for="DNI" class="form-control" maxlength="8" />
+            <input asp-for="DNI" class="form-control" maxlength="8" id="DNI" />
             <span asp-validation-for="DNI" class="text-danger"></span>
         </div>
         <div class="col-md-4 mb-3">
             <label asp-for="Telefono" class="form-label"></label>
-            <input asp-for="Telefono" class="form-control" />
+            <input asp-for="Telefono" class="form-control" id="Telefono" />
             <span asp-validation-for="Telefono" class="text-danger"></span>
         </div>
         <div class="col-md-4 mb-3">
             <label asp-for="Sexo" class="form-label"></label>
-            <select asp-for="Sexo" class="form-select">
+            <select asp-for="Sexo" class="form-select" id="Sexo">
                 <option value="">Seleccione</option>
                 <option value="Masculino">Masculino</option>
                 <option value="Femenino">Femenino</option>
@@ -41,30 +41,42 @@
     <div class="row">
         <div class="col-md-6 mb-3">
             <label asp-for="CorreoElectronico" class="form-label"></label>
-            <input asp-for="CorreoElectronico" class="form-control" type="email" />
+            <input asp-for="CorreoElectronico" class="form-control" type="email" id="CorreoElectronico" />
             <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
         </div>
         <div class="col-md-3 mb-3">
             <label asp-for="FechaNacimiento" class="form-label"></label>
-            <input asp-for="FechaNacimiento" class="form-control" type="date" />
+            <input asp-for="FechaNacimiento" class="form-control" type="date" id="FechaNacimiento" />
             <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
         </div>
         <div class="col-md-3 mb-3">
             <label asp-for="FechaIngreso" class="form-label"></label>
-            <input asp-for="FechaIngreso" class="form-control" type="date" />
+            <input asp-for="FechaIngreso" class="form-control" type="date" id="FechaIngreso" />
             <span asp-validation-for="FechaIngreso" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-4 mb-3">
-            <label asp-for="Cargo" class="form-label"></label>
-            <input asp-for="Cargo" class="form-control" />
+            <label asp-for="Cargo" class="form-label">Cargo *</label>
+            <select asp-for="Cargo" class="form-select">
+                <option value="">Seleccione el cargo</option>
+                <option value="Gerente">Gerente</option>
+                <option value="Desarrollador">Desarrollador</option>
+                <option value="Analista">Analista</option>
+                <option value="Diseñador">Diseñador</option>
+                <option value="Coordinador">Coordinador</option>
+                <option value="Especialista">Especialista</option>
+                <option value="Técnico">Técnico</option>
+                <option value="Asistente">Asistente</option>
+                <option value="Administrador">Administrador</option>
+                <option value="Supervisor">Supervisor</option>
+            </select>
             <span asp-validation-for="Cargo" class="text-danger"></span>
         </div>
         <div class="col-md-4 mb-3">
             <label asp-for="Departamento" class="form-label"></label>
-            <select asp-for="Departamento" class="form-select">
+            <select asp-for="Departamento" class="form-select" id="Departamento">
                 <option value="">Seleccione</option>
                 <option value="Tecnología">Tecnología</option>
                 <option value="Finanzas">Finanzas</option>
@@ -76,17 +88,17 @@
             </select>
             <span asp-validation-for="Departamento" class="text-danger"></span>
         </div>
-        <div class="col-md-2 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Salario" class="form-label"></label>
             <div class="input-group">
                 <span class="input-group-text">S/</span>
-                <input asp-for="Salario" class="form-control" type="number" step="0.01" />
+                <input asp-for="Salario" class="form-control" type="number" step="0.01" id="Salario" />
             </div>
             <span asp-validation-for="Salario" class="text-danger"></span>
         </div>
         <div class="col-md-2 mb-3">
             <label asp-for="Estado" class="form-label"></label>
-            <select asp-for="Estado" class="form-select">
+            <select asp-for="Estado" class="form-select" id="Estado">
                 <option value="Activo">Activo</option>
                 <option value="Inactivo">Inactivo</option>
             </select>
@@ -101,7 +113,7 @@
 </form>
 
 <script>
-    // Envío del formulario vía AJAX
+    // SOLO AJAX - SIN ALERT
     $('#createForm').submit(function(e) {
         e.preventDefault();
 
@@ -112,13 +124,56 @@
             success: function(response) {
                 if (response.success) {
                     $('#trabajadorModal').modal('hide');
-                    location.reload();
+                    // Usar SweetAlert en lugar de alert
+                    if (typeof Alertas !== 'undefined') {
+                        Alertas.exito('Trabajador registrado exitosamente');
+                    } else {
+                        alert('Trabajador registrado exitosamente');
+                    }
+                    setTimeout(() => location.reload(), 1500);
                 } else {
-                    alert(response.message);
+                    // MOSTRAR ERRORES Y MARCAR CAMPOS EN ROJO
+                    if (response.errors) {
+                        // Limpiar clases de error anteriores
+                        $('.is-invalid').removeClass('is-invalid');
+
+                        // Marcar campos con error
+                        response.errors.forEach(function(error) {
+                            if (error.includes('Nombres')) $('#Nombres').addClass('is-invalid');
+                            if (error.includes('Apellidos')) $('#Apellidos').addClass('is-invalid');
+                            if (error.includes('DNI')) $('#DNI').addClass('is-invalid');
+                            if (error.includes('Teléfono')) $('#Telefono').addClass('is-invalid');
+                            if (error.includes('Sexo')) $('#Sexo').addClass('is-invalid');
+                            if (error.includes('Correo')) $('#CorreoElectronico').addClass('is-invalid');
+                            if (error.includes('Fecha de Nacimiento')) $('#FechaNacimiento').addClass('is-invalid');
+                            if (error.includes('Fecha de Ingreso')) $('#FechaIngreso').addClass('is-invalid');
+                            if (error.includes('Cargo')) $('#Cargo').addClass('is-invalid');
+                            if (error.includes('Departamento')) $('#Departamento').addClass('is-invalid');
+                            if (error.includes('Salario')) $('#Salario').addClass('is-invalid');
+                            if (error.includes('Estado')) $('#Estado').addClass('is-invalid');
+                        });
+
+                        // Mostrar errores con SweetAlert
+                        if (typeof Alertas !== 'undefined') {
+                            Alertas.error(response.errors);
+                        } else {
+                            alert('Errores:\n' + response.errors.join('\n'));
+                        }
+                    } else {
+                        if (typeof Alertas !== 'undefined') {
+                            Alertas.error(response.message || 'Error al guardar');
+                        } else {
+                            alert(response.message || 'Error al guardar');
+                        }
+                    }
                 }
             },
             error: function() {
-                alert('Error al procesar la solicitud');
+                if (typeof Alertas !== 'undefined') {
+                    Alertas.error('Error al procesar la solicitud');
+                } else {
+                    alert('Error al procesar la solicitud');
+                }
             }
         });
     });

@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Gestión de Trabajadores</title>
 
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Font Awesome 6 (iconos) -->
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-
-    <!-- Google Fonts - Inter -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
@@ -35,11 +34,6 @@
                                 <i class="fas fa-users me-1"></i> Trabajadores
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-chart-line me-1"></i> Dashboard
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -54,20 +48,19 @@
 
     <footer class="footer text-muted">
         <div class="container">
-            &copy; 2026 - Gestión de Trabajadores - Sistema de Mantenimiento
+            &copy; 2026 - Gestión de Trabajadores
         </div>
     </footer>
 
-    <!-- jQuery (IMPORTANTE: Debe ir ANTES de Bootstrap) -->
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Bootstrap 5 Bundle (incluye Popper) -->
+    <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- JavaScript personalizado -->
+    <!-- SweetAlert2 (IMPORTANTE: ANTES de site.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Tu JS personalizado -->
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- Scripts adicionales de las páginas -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

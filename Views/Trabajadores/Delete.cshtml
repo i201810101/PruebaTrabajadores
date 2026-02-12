@@ -1,21 +1,33 @@
 ﻿@model PruebaTrabajadores.Models.Trabajador
 
 <div class="text-center">
-    <h4 class="text-warning">¿Está seguro de eliminar este registro?</h4>
+    <h4 class="text-warning mb-4">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        ¿Está seguro de eliminar este registro?
+    </h4>
 
-    <div class="alert alert-danger mt-4">
+    <div class="alert alert-danger">
+        <i class="fas fa-ban me-2"></i>
         <strong>Esta acción no se puede deshacer.</strong><br />
         El trabajador será eliminado permanentemente del sistema.
     </div>
 
-    <div class="card mt-4">
+    <div class="card shadow-sm mt-4">
         <div class="card-body">
-            <h5 class="card-title">@Model.NombreCompleto</h5>
-            <p class="card-text">
-                <strong>DNI:</strong> @Model.DNI<br />
-                <strong>Cargo:</strong> @Model.Cargo<br />
-                <strong>Departamento:</strong> @Model.Departamento
-            </p>
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-danger text-white d-flex justify-content-center align-items-center me-3"
+                     style="width: 60px; height: 60px; font-size: 1.5rem;">
+                    @Model.Iniciales
+                </div>
+                <div class="text-start">
+                    <h5 class="card-title mb-1">@Model.NombreCompleto</h5>
+                    <p class="card-text text-muted mb-0">
+                        <strong>DNI:</strong> @Model.DNI<br />
+                        <strong>Cargo:</strong> @Model.Cargo<br />
+                        <strong>Departamento:</strong> @Model.Departamento
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -23,26 +35,47 @@
         @Html.AntiForgeryToken()
         <input type="hidden" name="id" value="@Model.Id" />
 
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i>Cancelar
+        </button>
+        <button type="submit" class="btn btn-danger px-4" id="btnConfirmarEliminar">
+            <i class="fas fa-trash me-2"></i>Sí, Eliminar
+        </button>
     </form>
 </div>
 
 <script>
-    $('#deleteForm').submit(function(e) {
+    // FORZAR AJAX - EVITAR ENVÍO TRADICIONAL
+    $('#deleteForm').off('submit').on('submit', function(e) {
         e.preventDefault();
 
+        var form = $(this);
+        var id = $('input[name="id"]').val();
+
         $.ajax({
-            url: '@Url.Action("Delete", "Trabajadores")',
+            url: '/Trabajadores/Delete/' + id,
             type: 'POST',
-            data: $(this).serialize(),
+            data: form.serialize(),
+            beforeSend: function() {
+                mostrarCargando();
+            },
             success: function(response) {
+                ocultarCargando();
                 if (response.success) {
                     $('#trabajadorModal').modal('hide');
-                    location.reload();
+
+                    // MOSTRAR MODAL 
+                    Alertas.exito('Trabajador eliminado correctamente');
+
+                    //  RECARGAR LA PÁGINA DESPUÉS DE 1.5 SEGUNDOS
+                    setTimeout(() => location.reload(), 1500);
                 } else {
-                    alert(response.message);
+                    Alertas.error(response.message || 'Error al eliminar');
                 }
+            },
+            error: function(xhr) {
+                ocultarCargando();
+                Alertas.error('Error al eliminar el trabajador');
             }
         });
     });
